@@ -1,0 +1,134 @@
+<div class="container mx-auto">
+    <p-table #dt [value]="contractOverviewRecords" responsiveLayout="scroll" [rows]="10" [paginator]="true" [globalFilterFields]="['contractNo','customer','vehicle','vin','monthly_rate','vehicle_price']" [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="contractNo">Contract No
+                    <p-sortIcon field="contractNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="customer">Customer
+                    <p-sortIcon field="contractNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="vehicle">Vehicle
+                    <p-sortIcon field="vehicle"></p-sortIcon>
+                </th>
+                <th pSortableColumn="vin">VIN
+                    <p-sortIcon field="vin"></p-sortIcon>
+                </th>
+                <th pSortableColumn="monthly_rate">Monthly Rate
+                    <p-sortIcon field="monthly_rate"></p-sortIcon>
+                </th>
+                <th pSortableColumn="vehicle_price">Vehicle Price
+                    <p-sortIcon field="vehicle_price"></p-sortIcon>
+                </th>
+                <th>Details</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-contractOverview>
+            <tr>
+                <td>{{contractOverview.contractNumber}}</td>
+                <td>{{contractOverview.customer.firstName + " " + contractOverview.customer.lastName}}</td>
+                <td>{{contractOverview.vehicle.brand + " " + contractOverview.vehicle.model + " "+contractOverview.vehicle.modelYear}}</td>
+                <td>{{contractOverview.vehicle.vin}}</td>
+                <td>{{contractOverview.monthlyRate | currency : 'EUR'}}</td>
+                <td>{{contractOverview.vehicle.price | currency : 'EUR'}}</td>
+                <td> <button pButton pRipple label="" (click)="editContractRecord(contractOverview)" icon="pi pi-external-link" class="p-button-secondary"></button> </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog [(visible)]="contractOverviewDialog" [style]="{width: '450px'}" header="Leasing Contract" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="p-field">
+                <label for="contractNo">Contract No</label>
+                <input type="number" pInputText id="contractNo" #contractNo [(ngModel)]="contractOverview.contractNumber" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !contractOverview.contractNumber">Contract No is required.</small>
+            </div>
+            <br>
+            <div class="p-field">
+                <label for="monthlyRate">Monthly Rate</label>
+                <input type="text" pInputText id="monthlyRate" [(ngModel)]="contractOverview.monthlyRate" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !contractOverview.monthlyRate">Monthly Rate is required.</small>
+
+            </div>
+            <br>
+            <label for="customer">Customer</label>
+            <div class="p-inputgroup">
+                <input type="text" pInputText id="customer" [value]="customer.firstName+' '+customer.lastName" required autofocus readonly/>
+                <small class="p-invalid" *ngIf="submitted && !customer.firstName">Customer Name is required.</small>
+                <button type="button" pButton pRipple icon="pi pi-trash" (click)="deleteCustomer(customer)" class="p-button-danger"></button>
+                <button type="button" pButton icon="pi pi-external-link" (click)="editCustomer(customer)" class="p-button-warn"></button>
+            </div>
+            <br>
+            <label for="vehicle">Vehicle</label>
+            <div class="p-inputgroup">
+                <input type="text" pInputText id="vehicle" [value]="vehicle.brand+' '+vehicle.model+' '+vehicle.modelYear" required autofocus readonly/>
+                <small class="p-invalid" *ngIf="submitted && !vehicle">Vehicle is required.</small>
+                <button type="button" pButton pRipple icon="pi pi-trash" (click)="deleteVehicle(vehicle)" class="p-button-danger"></button>
+                <button type="button" pButton icon="pi pi-external-link" (click)="editVehicle(vehicle)" class="p-button-warn"></button>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveContract()"></button>
+        </ng-template>
+    </p-dialog>
+    <p-dialog [(visible)]="customerDialog" [style]="{width: '450px'}" header="Customer Details" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="p-field">
+                <label for="firstName">First Name</label>
+                <input type="text" pInputText id="firstName" [(ngModel)]="customer.firstName" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !customer.firstName">First Name is required.</small>
+            </div>
+            <br>
+            <div class="p-field">
+                <label for="lastName">Last Name</label>
+                <input type="text" pInputText id="lastName" [(ngModel)]="customer.lastName" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !customer.lastName">Last Name is required.</small>
+
+            </div>
+            <br>
+            <label for="customer">Birthdate</label>
+            <div class="p-inputgroup">
+                <input type="date" pInputText id="birthdate" [(ngModel)]="customer.birthdate" required autofocus useValueAsLocalDate/>
+                <small class="p-invalid" *ngIf="submitted && !customer.birthdate">Date is required.</small>
+            </div>
+
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCustomerDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveCustomer()"></button>
+        </ng-template>
+    </p-dialog>
+    <p-dialog [(visible)]="vehicleDialog" [style]="{width: '450px'}" header="Vehicle Details" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <br>
+            <div class="p-field">
+                <label for="brand">Brand</label>
+                <input type="text" pInputText id="brand" [(ngModel)]="vehicle.brand" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !vehicle.brand">Brand is required.</small>
+            </div>
+            <br>
+            <div class="p-field">
+                <label for="model"> Model </label>
+                <input type="text" pInputText id="model" [(ngModel)]="vehicle.model" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !vehicle.model">Model is required.</small>
+            </div>
+            <div class="p-field">
+                <label for="modelYear"> Model Year </label>
+                <input type="text" pInputText id="modelYear" [(ngModel)]="vehicle.modelYear" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !vehicle.modelYear">Model Year is required.</small>
+            </div>
+            <br>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideVehicleDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveVehicle()"></button>
+        </ng-template>
+    </p-dialog>
+    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+</div>

@@ -1,0 +1,39 @@
+[{
+        "id": 1,
+        "contractNo": 1234567,
+        "customer": {
+            "id": 1,
+            "firstName": "Max",
+            "lastName": "Musterman",
+            "birthday": "1980-01-01"
+        },
+        "vehicle": {
+            "id": 1,
+            "brand": "BMW",
+            "model": "X3",
+            "modelYear": "(2022)"
+        },
+        "vin": "x123456",
+        "monthlyRate": 35000,
+        "vehiclePrice": 4535000
+    },
+    {
+        "id": 2,
+        "contractNo": 123568,
+        "customer": {
+            "id": 2,
+            "firstName": "Maria",
+            "lastName": "Musterrau",
+            "birthday": "1980-01-01"
+        },
+        "vehicle": {
+            "id": 2,
+            "brand": "BMW",
+            "model": "330i",
+            "modelYear": "(2022)"
+        },
+        "vin": "-",
+        "monthlyRate": 36500,
+        "vehiclePrice": 4735000
+    }
+]
